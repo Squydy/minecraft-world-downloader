@@ -2,7 +2,7 @@ package game.data.maps;
 
 import packets.DataTypeProvider;
 
-public class PlayerMap_1_21_4 extends PlayerMap {
+public class PlayerMap_1_21_4 extends PlayerMap_1_17 {
     public PlayerMap_1_21_4(int id) {
         super(id);
     }
@@ -16,7 +16,7 @@ public class PlayerMap_1_21_4 extends PlayerMap {
         parseMapImage(provider);
     }
 
-    private void parseIcons(DataTypeProvider provider) {
+    public void parseIcons(DataTypeProvider provider) {
         icons.clear();
 
         boolean hasIcons = provider.readBoolean();
