@@ -55,6 +55,7 @@ public class ItemFrame extends ObjectEntity {
     public void parseMetadata(DataTypeProvider provider) {
         if (metaData == null) {
             metaData = Config.versionReporter().select(ItemFrameMetaData.class,
+                    Option.of(Version.V1_21_4, ItemFrameMetaData_1_21_4::new),
                     Option.of(Version.V1_17, ItemFrameMetaData_1_17::new),
                     Option.of(Version.ANY, ItemFrameMetaData::new)
             );
@@ -63,6 +64,18 @@ public class ItemFrame extends ObjectEntity {
             metaData.parse(provider);
         } catch (Exception ex) {
             // couldn't parse metadata, whatever
+        }
+    }
+
+    private class ItemFrameMetaData_1_21_4 extends ItemFrameMetaData {
+    @Override
+    public Consumer<DataTypeProvider> getIndexHandler(int i) {
+        // Updated metadata indices for 1.21.4
+        return switch (i) {
+            case 7 -> provider -> item = provider.readSlot();      // held item
+            case 8 -> provider -> rotation = provider.readVarInt(); // rotation
+            default -> super.getIndexHandler(i);
+            };
         }
     }
 
