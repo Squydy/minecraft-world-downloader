@@ -30,11 +30,19 @@ public class MetaData_1_21_4 extends MetaData_1_19_3 {
         typeHandlers.put(8, DataTypeProvider::readBoolean);
         typeHandlers.put(9, DataTypeProvider::readBoolean);
         typeHandlers.put(10, DataTypeProvider::readLong);
-        typeHandlers.put(11, provider -> { if(provider.readBoolean()) provider.readLong(); });
+        typeHandlers.put(11, provider -> {
+            if (provider.readBoolean()) {
+                provider.readLong();
+            }
+        });
         typeHandlers.put(12, DataTypeProvider::readVarInt);
         typeHandlers.put(14, DataTypeProvider::readVarInt);
         typeHandlers.put(15, DataTypeProvider::readNbtTag);
-        typeHandlers.put(17, provider -> { provider.readVarInt(); provider.readVarInt(); provider.readVarInt(); });
+        typeHandlers.put(17, (provider -> {
+            provider.readVarInt();
+            provider.readVarInt();
+            provider.readVarInt();
+        }));
         typeHandlers.put(18, DataTypeProvider::readOptVarInt);
         typeHandlers.put(19, DataTypeProvider::readVarInt);
     }
@@ -49,7 +57,7 @@ public class MetaData_1_21_4 extends MetaData_1_19_3 {
     public Consumer<DataTypeProvider> getIndexHandler(int i) {
         // For ItemFrame
         switch (i) {
-            case 7: return provider -> {}; // will be handled by entity-specific metadata
+            case 7: return DataTypeProvider::readSlot; // will be handled by entity-specific metadata
         }
         return super.getIndexHandler(i);
     }
