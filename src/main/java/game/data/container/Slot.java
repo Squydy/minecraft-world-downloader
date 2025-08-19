@@ -3,6 +3,7 @@ package game.data.container;
 import game.data.registries.RegistryManager;
 import se.llbit.nbt.ByteTag;
 import se.llbit.nbt.CompoundTag;
+import se.llbit.nbt.IntTag;
 import se.llbit.nbt.SpecificTag;
 import se.llbit.nbt.StringTag;
 
@@ -31,22 +32,32 @@ public class Slot {
             '}';
     }
 
-    public CompoundTag toNbt() {
-        CompoundTag tag = new CompoundTag();
-        tag.add("id", new StringTag(RegistryManager.getInstance().getItemRegistry().getItemName(itemId)));
-        tag.add("Count", new ByteTag(count));
+public CompoundTag toNbt() {
+    CompoundTag tag = new CompoundTag();
+    String itemName = RegistryManager.getInstance().getItemRegistry().getItemName(itemId);
 
-        if (nbt instanceof CompoundTag) {
-            tag.add("tag", nbt);
+    tag.add("id", new StringTag(itemName));
+    tag.add("Count", new ByteTag(count));
+
+    if (nbt instanceof CompoundTag compound) {
+        tag.add("tag", compound);
+    }
+
+    // Special case: maps in 1.20.6+
+    if ("minecraft:filled_map".equals(itemName)) {
+        CompoundTag mapTag = (nbt instanceof CompoundTag comp) ? comp : new CompoundTag();
+
+        // Ensure we have a "map" field
+        if (mapTag.get("map") == null) {
+            // TODO this should come from MapItemData packet just using static number for testing
+            mapTag.add("map", new IntTag(10674));
         }
-        return tag;
+
+        tag.add("tag", mapTag);
     }
 
-    public CompoundTag toNbt(int index) {
-        CompoundTag tag = toNbt();
-        tag.add("Slot", new ByteTag(index));
-        return tag;
-    }
+    return tag;
+}
 
 
 }
