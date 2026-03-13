@@ -204,13 +204,16 @@ public class EntityRegistry{
 	 * when the chunk is unloaded. This way we won't accidentally delete entities that belong to an unsaved chunk.
 	 */
 	public void destroyEntities(DataTypeProvider provider) {
-		int count = provider.readVarInt();
-		while(count-- > 0){
-			int id = provider.readVarInt();
-			if(entities.containsKey(id)){
-				players.remove(entities.get(id).uuid);
-				entities.remove(id);
+		try {
+			int count = provider.readVarInt();
+			while (count-- > 0 && provider.hasNext()) {
+				int id = provider.readVarInt();
+				if (entities.containsKey(id)) {
+					players.remove(entities.get(id).uuid);
+					entities.remove(id);
+				}
 			}
+		} catch (RuntimeException ex) {
 		}
 	}
 	

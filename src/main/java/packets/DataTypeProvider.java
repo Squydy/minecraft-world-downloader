@@ -73,21 +73,23 @@ public class DataTypeProvider {
 
     public long readVarLong() {
         int numRead = 0;
-        long result = 0;
+        long result = 0L;
         byte read;
+
         do {
             if (!hasNext()) {
                 throw new RuntimeException("Invalid VarLong found! Packet structure may have changed.");
             }
+
             read = readNext();
-            int value = (read & 0b01111111);
+            long value = (read & 0b0111_1111);
             result |= (value << (7 * numRead));
 
             numRead++;
             if (numRead > 10) {
                 throw new RuntimeException("VarLong is too big");
             }
-        } while ((read & 0b10000000) != 0);
+        } while ((read & 0b1000_0000) != 0);
 
         return result;
     }
