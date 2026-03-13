@@ -7,6 +7,8 @@ import game.data.coordinates.Coordinate3D;
 import game.data.container.Slot;
 import game.data.container.Slot_1_12;
 import game.data.coordinates.CoordinateDouble3D;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.function.Supplier;
 import packets.version.DataTypeProvider_1_13;
@@ -122,11 +124,9 @@ public class DataTypeProvider {
     public String readString() {
         int stringSize = readVarInt();
 
-        StringBuilder sb = new StringBuilder();
-        while (stringSize-- > 0) {
-            sb.appendCodePoint(readNext() & 0xFF);
-        }
-        return sb.toString();
+        byte[] bytes = readByteArray(stringSize);
+
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
     public int readVarInt() {
